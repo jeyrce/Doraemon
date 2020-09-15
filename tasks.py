@@ -60,13 +60,14 @@ def lock(ctx):
 
 
 @task
-def version(ctx, new):
+def version(ctx, new=None):
     """
-    -- change current version to new
+    --inv version [new]: change version to new or show current version
     """
     files = [
         ".bumpversion.cfg",
         "VERSION",
         "Doraemon/settings.py",
     ]
-    ctx.run(f"bumpversion --new-version {new} {' '.join(files)}", echo=True)
+    cmd = f"bumpversion --new-version {new} {' '.join(files)}" if new else "cat VERSION"
+    ctx.run(cmd, echo=False)
