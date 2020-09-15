@@ -16,6 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from Doraemon.settings import GOTO_URL
+from Doraemon.view import *
+
 urlpatterns = [
     path('/', admin.site.urls),
+    path(GOTO_URL, GoToView.as_view()),
 ]
