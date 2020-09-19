@@ -7,27 +7,51 @@ __author__  = JeeysheLu [Jeeyshe@gmail.com] [https://www.lujianxin.com/] [2020/9
 
 This software is licensed to you under the MIT License. Looking forward to making it better.
 """
+import datetime
 
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, View, TemplateView, ListView
+from django.http.response import JsonResponse
+from django.shortcuts import render
 
-from Doraemon.model import Link
+from Doraemon.model import Link, Attendance
 
 __all__ = [
-    "GoToView",
+    "IndexView", "GoToView", "SearchView", "SignView",
 ]
 
 
-class GoToView(RedirectView):
-    permanent = False
-    url = None
-    pattern_name = "文档链接"
-    query_string = False
+class IndexView(ListView):
+    """
+    首页显示最近一周的排班情况
+    TODO: 展示高频搜索关键字词云，链接点击次数统计等
+    """
 
-    def get_redirect_url(self, *args, **kwargs):
-        link = Link.objects.filter(link=kwargs.get("link", None)).first()
-        if not link:
-            return "404.html"
-        # 统计链接点击次数
-        link.click += 1
-        link.save()
-        return link.goto_url()
+    ordering = "date"
+    queryset = Attendance.objects.filter(
+        date__gte=datetime.date.today(),
+        date__lte=datetime.date.today() + datetime.timedelta(days=7),
+    )
+
+
+class GoToView(View):
+
+    def get(self, request):
+        # TODO: 点击表插入记录
+        return JsonResponse({"code": 0, "message": "ok", "data": None})
+
+
+class SearchView(View):
+
+    def get(self, request):
+        # TODO: 搜索记录表插入记录
+        return JsonResponse({"code": 0, "message": "ok", "data": None})
+
+
+class SignView(View):
+    """
+    值班签到
+    """
+
+    def get(self, request):
+        # TODO: 值班人打开连接后标记已签到
+        return render(request, "message/sign.html", {"succeed": True})

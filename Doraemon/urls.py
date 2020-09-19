@@ -19,7 +19,12 @@ from django.urls import path
 from Doraemon.settings import GOTO_URL
 from Doraemon.view import *
 
+app_name = "Doraemon"
+
 urlpatterns = [
-    path('/', admin.site.urls),
+    path('/', IndexView.as_view()),
+    path('admin', admin.site.urls),
     path(GOTO_URL, GoToView.as_view()),
+    path('search', SearchView.as_view()),
+    path('sign', SignView.as_view()),
 ]

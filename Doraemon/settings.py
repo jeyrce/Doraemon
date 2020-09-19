@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "Doraemon",
 ]
 
 MIDDLEWARE = [
@@ -80,22 +81,28 @@ DATABASES = {
     }
 }
 
+REDIS_AUTH = {
+    "ip": "127.0.0.1",
+    "password": "lujianxin.com",
+    "port": 6379,
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
 ]
 
 # Internationalization
@@ -117,3 +124,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 GOTO_URL = "/goto"
+
+# 消息提醒类型
+TASKS = (
+    ("早九点值班提醒", 'GROUP_MORNING'),
+    ("晚六点值班提醒", 'GROUP_NIGHT'),
+    ("早九点接待提醒", 'PROBLEM_MORNING'),
+    ("晚六点接待提醒", 'PROBLEM_NIGHT'),
+    ("排班表补充提醒", "ATTENDANCE"),
+)
