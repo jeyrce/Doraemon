@@ -12,11 +12,14 @@ import datetime
 from django.views.generic import RedirectView, View, TemplateView, ListView
 from django.http.response import JsonResponse
 from django.shortcuts import render
+from django.contrib.auth.views import PasswordResetView
 
+from Doraemon.forms import SyncMailPasswordResetForm
 from Doraemon.model import Link, Attendance
+from utils import get_from_db
 
 __all__ = [
-    "IndexView", "GoToView", "SearchView", "SignView",
+    "IndexView", "GoToView", "SearchView", "SignView", "PasswordResetView", "SyncMailPasswordResetView",
 ]
 
 
@@ -29,7 +32,7 @@ class IndexView(ListView):
     ordering = "date"
     queryset = Attendance.objects.filter(
         date__gte=datetime.date.today(),
-        date__lte=datetime.date.today() + datetime.timedelta(days=7),
+        date__lte=datetime.date.today() + datetime.timedelta(days=get_from_db("SHOW_DUTY_DAYS", int, 7)),
     )
 
 
@@ -55,3 +58,10 @@ class SignView(View):
     def get(self, request):
         # TODO: 值班人打开连接后标记已签到
         return render(request, "message/sign.html", {"succeed": True})
+
+
+class SyncMailPasswordResetView(PasswordResetView):
+    """
+    cover原有逻辑, 采用异步任务发送邮件
+    """
+    form_class = SyncMailPasswordResetForm

@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.contrib.auth import views as auth_views
 
 from Doraemon.settings import GOTO_URL
 from Doraemon.view import *
@@ -23,8 +24,15 @@ app_name = "Doraemon"
 
 urlpatterns = [
     path('/', IndexView.as_view()),
-    path('admin', admin.site.urls),
+    path('admin/', admin.site.urls),
     path(GOTO_URL, GoToView.as_view()),
-    path('search', SearchView.as_view()),
-    path('sign', SignView.as_view()),
+    path('search/', SearchView.as_view()),
+    path('sign/', SignView.as_view()),
 ]
+
+urlpatterns.extend([
+    path('auth/password_reset/', SyncMailPasswordResetView.as_view(), name='password_reset'),
+    path('auth/password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('auth/reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('auth/reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+])

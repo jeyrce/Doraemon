@@ -15,6 +15,10 @@ from Doraemon.settings import GOTO_URL, TASKS
 
 UserProfile = get_user_model()
 
+__all__ = [
+    "Robot", "Message", "Keyword", "Link", "Click", "Search", "Attendance", "System",
+]
+
 
 class ModelMixin(object):
     """数据模型公共属性"""
@@ -61,7 +65,7 @@ class Message(Model, ModelMixin):
     """
     task = CharField(max_length=32, unique=True, null=False, blank=False, verbose_name="任务名称", choices=TASKS)
     content = TextField(null=True, blank=True, verbose_name="消息内容")
-    robot = ForeignKey(Robot, on_delete=SET_NULL, verbose_name="推送机器人")
+    robot = ForeignKey(Robot, on_delete=SET_NULL, verbose_name="推送机器人", limit_choices_to={"is_active": True})
 
     class Meta:
         verbose_name_plural = verbose_name = "定时消息推送表"
@@ -168,3 +172,18 @@ class Attendance(Model, CountMixin):
         是否已完成签到
         """
         return self.active
+
+
+class System(Model, ModelMixin):
+    """
+    系统配置
+    """
+    key = CharField(max_length=32, null=False, blank=False, unique=True, verbose_name="键")
+    value = CharField(max_length=32, null=False, blank=False, verbose_name="值")
+
+    class Meta:
+        verbose_name_plural = verbose_name = "系统配置"
+        db_table = "system"
+
+    def __str__(self):
+        return self.remake

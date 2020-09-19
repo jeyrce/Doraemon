@@ -75,10 +75,20 @@ WSGI_APPLICATION = 'Doraemon.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
+    # 开发使用
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # 生产使用
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'Doraemon',
+    #     'USER': 'root',
+    #     'PASSWORD': 'lujianxin.com',
+    #     'HOST': '127.0.0.1',
+    #     'PORT': '3306',
+    # }
 }
 
 REDIS_AUTH = {
@@ -123,7 +133,20 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-GOTO_URL = "/goto"
+STATIC_ROOT = BASE_DIR / 'STATIC'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+GOTO_URL = "/goto/"
+
+AUTHENTICATION_BACKENDS = (
+    'Doraemon.auth.EmailUsernameAuthBackend',  # 使用用户名或密码登录
+    # 'Doraemon.auth.QQAuthBackend',  # QQ第三方登录
+    # 'Doraemon.auth.GithubAuthBackend',  # github 第三方登录
+    # 'Doraemon.auth.WechatAuthBackend',  # 微信第三方登录
+)
 
 # 消息提醒类型
 TASKS = (
@@ -133,3 +156,142 @@ TASKS = (
     ("晚六点接待提醒", 'PROBLEM_NIGHT'),
     ("排班表补充提醒", "ATTENDANCE"),
 )
+
+# ----------本站系统所用email配置----------
+EMAIL_SUBJECT_PREFIX = "[Doraemon]"
+SERVER_EMAIL = 'support@lujianxin.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.exmail.qq.com'
+EMAIL_PORT = 465
+EMAIL_USE_LOCALTIME = False
+
+# Optional SMTP authentication information for EMAIL_HOST.
+EMAIL_HOST_USER = 'support@lujianxin.com'
+EMAIL_HOST_PASSWORD = 'lujianxin.com'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_SSL_CERTFILE = None
+EMAIL_SSL_KEYFILE = None
+EMAIL_TIMEOUT = None
+
+CACHES = {
+    # 默认使用的库，session，csrf等存储
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{REDIS_AUTH['ip']}:{REDIS_AUTH['port']}/9",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {"max_connections": 100},
+            "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
+            "PASSWORD": REDIS_AUTH["password"],
+        }
+    },
+}
+
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 2
+# The path of the session cookie.
+SESSION_COOKIE_PATH = '/'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = not DEBUG
+
+# 基于cache的缓存: redis
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+DJANGO_REDIS_IGNORE_EXCEPTIONS = True  # 忽略异常
+
+LOGOUT_REDIRECT_URL = '/'
+CSRF_USE_SESSIONS = True
+
+# ------------simpleui配置
+
+SIMPLEUI_HOME_TITLE = '哆啦A梦管理系统'
+SIMPLEUI_LOGO = '/static/image/favicon.ico'
+SIMPLEUI_HOME_INFO = True
+SIMPLEUI_HOME_QUICK = True
+SIMPLEUI_HOME_ACTION = True
+SIMPLEUI_STATIC_OFFLINE = True
+SIMPLEUI_LOGIN_PARTICLES = False  # 关闭登录页粒子动画
+SIMPLEUI_ANALYSIS = False
+SIMPLEUI_CONFIG = {
+    'system_keep': True,
+    'menus': [
+        {
+            'name': '关于作者',
+            'icon': 'fas fa-code',
+            'url': 'https://www.lujianxin.com/'
+        },
+    ]
+}
+
+# ==========>logging<==========
+LOGGING_PATH = BASE_DIR / 'logs'
+if not Path(LOGGING_PATH).exists(): Path(LOGGING_PATH).mkdir()
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        # 日志格式
+        'standard': {
+            'format': '[%(levelname)s][%(asctime)s] [%(filename)s] [%(module)s.%(funcName)s:%(lineno)d]-%(message)s'},
+        # 简单格式
+        'simple': {
+            'format': '%(levelname)s %(funcName)s %(message)s'
+        },
+    },
+    # 过滤
+    'filters': {
+        # 暂无过滤
+    },
+    # 定义具体处理日志的方式
+    'handlers': {
+        # 默认记录所有日志
+        'default': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGGING_PATH / 'Doraemon.log',
+            'maxBytes': 1024 * 1024 * 10,  # 文件大小 10M
+            'backupCount': 10,  # 备份数
+            'formatter': 'standard',  # 输出格式
+            'encoding': 'utf-8',  # 设置默认编码，否则打印出来汉字乱码
+        },
+        # 输出错误日志
+        'error': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGGING_PATH / 'error.log',
+            'maxBytes': 1024 * 1024 * 10,  # 文件大小
+            'backupCount': 10,  # 备份数
+            'formatter': 'standard',  # 输出格式
+            'encoding': 'utf-8',  # 设置默认编码
+        },
+        # 控制台输出
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
+        },
+        # 输出info日志
+        'info': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGGING_PATH / 'info.log',
+            'maxBytes': 1024 * 1024 * 10,
+            'backupCount': 10,
+            'formatter': 'standard',
+            'encoding': 'utf-8',  # 设置默认编码
+        },
+    },
+    # 配置用哪几种 handlers 来处理日志
+    'loggers': {
+        # 类型 为 django 处理所有类型的日志， 默认调用
+        'django': {
+            'handlers': ['default', 'console'],
+            'level': 'INFO',
+            'propagate': False,  # 是否轮转
+        },
+        # log 调用时需要当作参数传入
+        'log': {
+            'handlers': ['error', 'info', 'console', 'default'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    }
+}
