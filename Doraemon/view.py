@@ -30,6 +30,7 @@ class IndexView(ListView):
     """
 
     ordering = "date"
+    template_name = "index.html"
     queryset = Attendance.objects.filter(
         date__gte=datetime.date.today(),
         date__lte=datetime.date.today() + datetime.timedelta(days=get_from_db("SHOW_DUTY_DAYS", int, 7)),
