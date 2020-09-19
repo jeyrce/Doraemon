@@ -139,7 +139,7 @@ STATICFILES_DIRS = [
 ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-GOTO_URL = "/goto/"
+GOTO_URL = "goto/"
 
 AUTHENTICATION_BACKENDS = (
     'Doraemon.auth.EmailUsernameAuthBackend',  # 使用用户名或密码登录

@@ -14,16 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path, include
 from django.contrib.auth import views as auth_views
+from django.views.static import serve
 
-from Doraemon.settings import GOTO_URL
+from Doraemon.settings import GOTO_URL, MEDIA_ROOT, STATIC_ROOT, DEBUG
 from Doraemon.view import *
 
 app_name = "Doraemon"
 
 urlpatterns = [
-    path('/', IndexView.as_view()),
+    path('', IndexView.as_view()),
     path('admin/', admin.site.urls),
     path(GOTO_URL, GoToView.as_view()),
     path('search/', SearchView.as_view()),
@@ -36,3 +37,8 @@ urlpatterns.extend([
     path('auth/reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('auth/reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ])
+
+if DEBUG:
+    urlpatterns.extend([
+        re_path('^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
+    ])

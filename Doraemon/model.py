@@ -65,7 +65,7 @@ class Message(Model, ModelMixin):
     """
     task = CharField(max_length=32, unique=True, null=False, blank=False, verbose_name="任务名称", choices=TASKS)
     content = TextField(null=True, blank=True, verbose_name="消息内容")
-    robot = ForeignKey(Robot, on_delete=SET_NULL, verbose_name="推送机器人", limit_choices_to={"is_active": True})
+    robot = ForeignKey(Robot, on_delete=SET_NULL, null=True, verbose_name="推送机器人", limit_choices_to={"is_active": True})
 
     class Meta:
         verbose_name_plural = verbose_name = "定时消息推送表"
@@ -79,7 +79,7 @@ class Keyword(Model, ModelMixin):
     """
     群消息关键字
     """
-    word = CharField(blank=False, null=False, verbose_name="关键字")
+    word = CharField(max_length=16, blank=False, null=False, verbose_name="关键字")
 
     class Meta:
         verbose_name_plural = verbose_name = "关键字表"
@@ -113,7 +113,7 @@ class Link(Model, ModelMixin):
 
     def goto_url(self):
         """通过本站跳转的url"""
-        return f"{GOTO_URL}?link={self.link}"
+        return f"/{GOTO_URL}?link={self.link}"
 
     def clicked(self):
         """点击次数统计"""
@@ -154,10 +154,11 @@ class Attendance(Model, CountMixin):
     """
     date = DateField(unique=True, null=False, blank=False, verbose_name="值班日期",
                      error_messages={'unique': '当天已存在值班人，请先移除或修改记录'})
-    worker = ForeignKey(UserProfile, null=False, blank=False, on_delete=PROTECT, verbose_name="责任人")
+    worker = ForeignKey(UserProfile, related_name="days", null=False, blank=False, on_delete=PROTECT,
+                        verbose_name="责任人")
     token = UUIDField(unique_for_year=True, blank=False, null=False, verbose_name="签到Token")
     create = DateTimeField(auto_now_add=True, null=False, blank=False, verbose_name="添加时间")
-    by = ForeignKey(UserProfile, null=False, blank=False, on_delete=PROTECT, verbose_name="创建人")
+    by = ForeignKey(UserProfile, related_name="creates", null=False, blank=False, on_delete=PROTECT, verbose_name="创建人")
     active = DateTimeField(null=True, blank=True, verbose_name="签到时间", help_text="为空则表示未签到")
 
     class Meta:
