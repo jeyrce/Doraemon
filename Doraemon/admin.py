@@ -176,16 +176,16 @@ class SearchAdmin(ClickAdmin):
 
 
 class AttendanceAdmin(ByUserMixin, CommonAdmin):
-    list_display = ("date", "worker", "is_active", "active")
+    list_display = ("date", "weekday", "worker", "is_active", "active")
     list_display_links = ()
     list_filter = ()
     list_editable = ()
     search_fields = ("date",)
     inlines = []
     ordering = ('-date',)
-    readonly_fields = ('token', 'create', "by", "active", "ip", "device", "is_active")
+    readonly_fields = ('token', 'create', "weekday", "by", "active", "ip", "device", "is_active")
     fieldsets = (
-        ("值班信息", {"fields": ("date", "worker", 'token',)}),
+        ("值班信息", {"fields": ("date", "weekday", "worker", 'token',)}),
         ("签到信息", {"fields": ("is_active", "active", "ip", "device",)}),
         ("其他信息", {"fields": ("by", 'create',)}),
     )

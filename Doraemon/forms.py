@@ -13,7 +13,7 @@ from django.contrib.auth.forms import PasswordResetForm
 from Task.mail import send_password_rest_link
 
 
-class SyncMailPasswordResetForm(PasswordResetForm):
+class AsyncMailPasswordResetForm(PasswordResetForm):
     """
     覆盖父类同步发送邮件,此处使用异步任务
     """

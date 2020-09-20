@@ -5,6 +5,11 @@
     <title>签到结果</title>
 </head>
 <body>
+{% if succeed %}
+    <p>签到成功:</p>{{ message }}
+{% else %}
+    <p>签到失败:</p>{{ message }}
+{% endif %}
 
 </body>
 </html>

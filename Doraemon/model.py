@@ -7,6 +7,8 @@ __author__  = JeeysheLu [Jeeyshe@gmail.com] [https://www.lujianxin.com/] [2020/9
 
 This software is licensed to you under the MIT License. Looking forward to making it better.
 """
+import uuid
+
 from django.contrib.auth import get_user_model
 from django.db.models import *
 from django.db.models.fields import *
@@ -105,7 +107,7 @@ class Link(Model):
     title = CharField(max_length=64, blank=False, null=False, verbose_name="连接标题")
     keywords = ManyToManyField(Keyword, related_name="keywords_set",
                                limit_choices_to={"is_active": True}, verbose_name="关键字")
-    link = URLField(blank=False, null=False, verbose_name="链接地址")
+    link = URLField(unique=True, blank=False, null=False, verbose_name="链接地址")
     create = DateTimeField(auto_now_add=True, verbose_name="添加时间")
     update = DateTimeField(auto_now=True, verbose_name="上次修改")
     # 需要在admin_model中重写save方法来获取当前登录对象, 删除用户对象时置空
@@ -175,7 +177,7 @@ class Attendance(Model):
                      error_messages={'unique': '当天已存在值班人，请先移除或修改记录'})
     worker = ForeignKey(UserProfile, related_name="days", null=False, blank=False, on_delete=PROTECT,
                         verbose_name="责任人")
-    token = UUIDField(unique_for_year=True, blank=False, null=False, verbose_name="签到Token")
+    token = UUIDField(unique_for_year=True, blank=True, null=False, verbose_name="签到Token", default=uuid.uuid4().hex)
     create = DateTimeField(auto_now_add=True, null=False, blank=False, verbose_name="添加时间")
     by = ForeignKey(UserProfile, related_name="creates", null=False, blank=False, on_delete=PROTECT, verbose_name="创建人")
     active = DateTimeField(null=True, blank=True, verbose_name="签到时间", help_text="为空则表示未签到")
@@ -187,7 +189,7 @@ class Attendance(Model):
         db_table = "attendance"
 
     def __str__(self):
-        return self.create
+        return self.date.strftime("%Y/%m/%d")
 
     def is_active(self):
         """
@@ -196,6 +198,15 @@ class Attendance(Model):
         return "Yes" if self.active else "No"
 
     is_active.short_description = "是否已签到"
+
+    def weekday(self):
+        """
+        返回星期中的位置
+        """
+        day_map = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+        return day_map[self.date.weekday()]
+
+    weekday.short_description = "工作日"
 
 
 class System(Model):

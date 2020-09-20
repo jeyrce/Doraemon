@@ -10,16 +10,16 @@ This software is licensed to you under the MIT License. Looking forward to makin
 import datetime
 
 from django.views.generic import RedirectView, View, TemplateView, ListView
-from django.http.response import JsonResponse
-from django.shortcuts import render
+from django.http.response import JsonResponse, Http404
+from django.shortcuts import render, redirect
 from django.contrib.auth.views import PasswordResetView
 
-from Doraemon.forms import SyncMailPasswordResetForm
-from Doraemon.model import Link, Attendance
+from Doraemon.forms import AsyncMailPasswordResetForm
+from Doraemon.model import Link, Attendance, Search, Click
 from utils import get_from_db
 
 __all__ = [
-    "IndexView", "GoToView", "SearchView", "SignView", "PasswordResetView", "SyncMailPasswordResetView",
+    "IndexView", "GoToView", "SearchView", "SignView", "PasswordResetView", "AsyncMailPasswordResetView", "alive_view",
 ]
 
 
@@ -40,8 +40,11 @@ class IndexView(ListView):
 class GoToView(View):
 
     def get(self, request):
-        # TODO: 点击表插入记录
-        return JsonResponse({"code": 0, "message": "ok", "data": None})
+        link = Link.objects.filter(link=request.GET.get("link", "")).first()
+        if not link:
+            raise Http404
+        Click.objects.create(link_id=link.id, ip=request.CLIENT["ip"], device=request.CLIENT["device"])
+        return redirect(link.link)
 
 
 class SearchView(View):
@@ -57,12 +60,38 @@ class SignView(View):
     """
 
     def get(self, request):
-        # TODO: 值班人打开连接后标记已签到
-        return render(request, "message/sign.html", {"succeed": True})
+        # 更新签到表，返回成功结果
+        today_attendance = Attendance.objects.filter(date=datetime.date.today()).first()
+        attendance = Attendance.objects.filter(token=request.GET.get("token")).first()
+        data = {
+            "date": today_attendance.date,
+            "weekday": today_attendance.weekday(),
+            "username": today_attendance.worker.get_full_name(),
+            "succeed": True,
+            "message": "请关注问题群消息，回应项目问题并及时更新问题进展！"
+        }
+        if (not attendance) or (attendance.date != datetime.date.today()):
+            data["succeed"] = False
+            data["message"] = "无效token!"
+        elif attendance.is_active():
+            data["succeed"] = False
+            data["message"] = "已经签到完成，无需再次点击！"
+
+        return render(request, "message/sign.html", data)
 
 
-class SyncMailPasswordResetView(PasswordResetView):
+class AsyncMailPasswordResetView(PasswordResetView):
     """
     cover原有逻辑, 采用异步任务发送邮件
     """
-    form_class = SyncMailPasswordResetForm
+    form_class = AsyncMailPasswordResetForm
+
+
+async def alive_view(request):
+    """
+    返回系统正常的结果
+    """
+    import asyncio
+    import time
+    time.sleep(12)
+    return JsonResponse({"code": 0, "data": request.CLIENT, "message": "OK"})
