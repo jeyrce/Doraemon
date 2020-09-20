@@ -11,6 +11,6 @@ This software is licensed to you under the MIT License. Looking forward to makin
 from django.apps import AppConfig
 
 
-class DbConfig(AppConfig):
+class DoraemonConfig(AppConfig):
     name = 'Doraemon'
     verbose_name = '后台管理'

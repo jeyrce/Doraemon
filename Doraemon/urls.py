@@ -13,10 +13,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import path, re_path, include
 from django.contrib.auth import views as auth_views
 from django.views.static import serve
+from django.contrib import admin
 
 from Doraemon.settings import GOTO_URL, MEDIA_ROOT, STATIC_ROOT, DEBUG
 from Doraemon.view import *

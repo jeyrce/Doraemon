@@ -12,14 +12,15 @@ import os
 import datetime
 
 import django
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Doraemon.settings")
+django.setup()
 from kombu import Exchange, Queue
 from celery.schedules import crontab
 from celery import platforms
 
 from Doraemon.settings import TASKS, REDIS_AUTH
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Doraemon.settings")
-django.setup()
 platforms.C_FORCE_ROOT = True  # 允许root用户启动worker
 
 # 记录日志

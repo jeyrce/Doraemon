@@ -25,7 +25,7 @@ def get_from_db(key, type_, default=None):
         return default
     assert callable(type_), f"Not supported type: {type_}"
     try:
-        return type_(item)
+        return type_(item.value)
     except Exception as e:
         logger.exception(e)
     return default

@@ -61,8 +61,12 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -141,6 +145,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 GOTO_URL = "goto/"
 
+# AUTH_USER_MODEL = 'Doraemon.Account'
 AUTHENTICATION_BACKENDS = (
     'Doraemon.auth.EmailUsernameAuthBackend',  # 使用用户名或密码登录
     # 'Doraemon.auth.QQAuthBackend',  # QQ第三方登录
@@ -150,11 +155,11 @@ AUTHENTICATION_BACKENDS = (
 
 # 消息提醒类型
 TASKS = (
-    ("早九点值班提醒", 'GROUP_MORNING'),
-    ("晚六点值班提醒", 'GROUP_NIGHT'),
-    ("早九点接待提醒", 'PROBLEM_MORNING'),
-    ("晚六点接待提醒", 'PROBLEM_NIGHT'),
-    ("排班表补充提醒", "ATTENDANCE"),
+    ('GROUP_MORNING', "早九点值班提醒"),
+    ('GROUP_NIGHT', "晚六点值班提醒"),
+    ('PROBLEM_MORNING', "早九点接待提醒"),
+    ('PROBLEM_NIGHT', "晚六点接待提醒"),
+    ("ATTENDANCE", "排班表补充提醒"),
 )
 
 # ----------本站系统所用email配置----------
@@ -216,7 +221,7 @@ SIMPLEUI_CONFIG = {
         {
             'name': '关于作者',
             'icon': 'fas fa-code',
-            'url': 'https://www.lujianxin.com/'
+            'url': 'https://me.lujianxin.com/'
         },
     ]
 }

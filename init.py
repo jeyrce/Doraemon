@@ -11,10 +11,10 @@ import os
 
 import django
 
-from Doraemon.model import System
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Doraemon.settings")
 django.setup()
+
+from Doraemon.model import System
 
 KEYS = [
     {"key": "SHOW_DUTY_DAYS", "value": "7", "remark": "首页显示的值班天数"},
