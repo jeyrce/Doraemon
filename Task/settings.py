@@ -60,29 +60,29 @@ CELERY_DEFAULT_ROUTING_KEY = 'default'
 # 定时任务配置如下
 CELERYBEAT_SCHEDULE = {
     # 值班群定时提醒任务
-    TASKS[0][0]: {
+    TASKS[0][1]: {
         'task': 'message.notice_on_time',
         'schedule': crontab(hour='09', minute='00'),
         'args': TASKS[0],
     },
-    TASKS[1][0]: {
+    TASKS[1][1]: {
         'task': 'message.notice_on_time',
         'schedule': crontab(hour='18', minute='00'),
         'args': TASKS[1],
     },
     # 问题群定时提醒任务
-    TASKS[2][0]: {
+    TASKS[2][1]: {
         'task': 'message.notice_on_time',
         'schedule': crontab(hour='09', minute='00'),
         'args': TASKS[2],
     },
-    TASKS[3][0]: {
+    TASKS[3][1]: {
         'task': 'message.notice_on_time',
         'schedule': crontab(hour='18', minute='00'),
         'args': TASKS[3],
     },
     # 系统提醒
-    TASKS[4][0]: {
+    TASKS[4][1]: {
         'task': 'message.notice_on_time',
         'schedule': crontab(hour='18', minute='30'),
         'args': TASKS[4],
@@ -91,5 +91,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'mail.yesterday_count',
         'schedule': crontab(hour='09', minute='30'),
         'args': (),
+    },
+    "每日更新值班表": {
+        "task": "message.update_attendance",
+        "schedule": crontab(hour="03", minute="00"),
+        "args": (),
     },
 }

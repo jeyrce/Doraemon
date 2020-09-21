@@ -7,17 +7,54 @@ __author__  = JeeysheLu [Jeeyshe@gmail.com] [https://www.lujianxin.com/] [2020/9
     
 This software is licensed to you under the MIT License. Looking forward to making it better.
 """
-
+import datetime
 import logging
 
-from Task import app
+from django.contrib.auth import get_user_model
 
+from Task import app
+from Doraemon.model import *
+from utils import get_from_db, get_next_username
+
+UserProfile = get_user_model()
 logger = logging.getLogger(__name__)
 
 
-@app.task
+@app.task("message.notice_on_time")
 def notice_on_time(*args):
     """
     从消息表筛选出结果进行推送到机器人
     """
-    pass
+    code, title = args
+    logger.info(f"[{title}]start push message...")
+    message = Message.objects.filter(task=code).first()
+    _, msg = message.send()
+    logger.info(f"[{title}push message over: {msg}")
+
+
+@app.task("message.update_attendance")
+def update_attendance(*args):
+    """
+    每天检查排班表，如果数量不足7天, 则创建接下来一天的排班记录
+    以此达到效果： 总是能看到从当前时间往后推一周的排班计划
+    """
+    logger.info("start update attendance...")
+    today = datetime.date.today()
+    attendances = Attendance.objects.filter(date__gte=today).order_by("date")
+    last = attendances.last()
+    if attendances.count() < get_from_db("SHOW_DUTY_DAYS", int, 7):
+        next_username = get_next_username(last.username)
+        if next_username:
+            next = {
+                "date": last.date + datetime.timedelta(days=1),
+                "worker": UserProfile.objects.filter(username=next_username),
+            }
+            try:
+                Attendance.objects.create(**next)
+            except Exception as e:
+                logger.exception(e)
+            else:
+                logger.info("update attendance succeed...")
+            return
+        logger.error("got next_username failed...")
+    logger.info("attendance's update not needed...")

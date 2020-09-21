@@ -12,9 +12,9 @@ import celery
 
 app = celery.Celery("Doraemon")
 
-app.config_from_object("Tasks.settings")
+app.config_from_object("Task.settings")
 
 app.autodiscover_tasks([
-    "Tasks.mail",
-    "Tasks.message",
+    "Task.mail",
+    "Task.message",
 ])
