@@ -82,11 +82,6 @@ CELERYBEAT_SCHEDULE = {
         'args': TASKS[3],
     },
     # 系统提醒
-    TASKS[4][1]: {
-        'task': 'message.notice_on_time',
-        'schedule': crontab(hour='18', minute='30'),
-        'args': TASKS[4],
-    },
     '昨日搜索和点击统计': {
         'task': 'mail.yesterday_count',
         'schedule': crontab(hour='09', minute='30'),
