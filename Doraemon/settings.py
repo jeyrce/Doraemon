@@ -26,7 +26,10 @@ SECRET_KEY = '-t2_02_pkgm=%9+k4ht8c*5m9)z@0qcsx38g&=s$#di)cbmys8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "xoo.site",
+    "127.0.0.1",
+]
 
 # Application definition
 
@@ -161,8 +164,18 @@ TASKS = (
     ('GROUP_NIGHT', "晚六点值班提醒"),
     ('PROBLEM_MORNING', "早九点接待提醒"),
     ('PROBLEM_NIGHT', "晚六点接待提醒"),
-    ("ATTENDANCE", "排班表补充提醒"),
 )
+
+# 初始化系统配置
+KEYS = [
+    {"key": "SHOW_DUTY_DAYS", "value": "7", "remark": "首页显示的值班天数"},
+    {"key": "UPGRADING", "value": "0", "remark": "网站是否处于维护状态"},
+    {
+        "key": "DUTY_LOOP",
+        "value": "['hailong.wang','xinyi.yang','tian.yuan','minghao.guan','futao.jiao','jeeyshe.lu','chenhui.shang','lei.xiao']",
+        "remark": "轮班顺序"
+    },
+]
 
 # ----------本站系统所用email配置----------
 EMAIL_SUBJECT_PREFIX = "[Doraemon]"

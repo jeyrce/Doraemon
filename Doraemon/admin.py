@@ -192,10 +192,10 @@ class AttendanceAdmin(ByUserMixin, CommonAdmin):
 
 
 class SystemAdmin(ByUserMixin, CommonAdmin):
-    list_display = ("key", "value", "remark", "by")
+    list_display = ("remark", "key", "value",)
     list_display_links = ()
-    list_editable = ("value", "remark")
-    search_fields = ("key", "remark")
+    list_editable = ()
+    search_fields = ("key", "value", "remark",)
     inlines = []
     ordering = ('-create',)
     readonly_fields = ('create', 'update', "by", "key")

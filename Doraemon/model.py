@@ -8,7 +8,9 @@ __author__  = JeeysheLu [Jeeyshe@gmail.com] [https://www.lujianxin.com/] [2020/9
 This software is licensed to you under the MIT License. Looking forward to making it better.
 """
 import uuid
+import json
 
+import requests
 from django.contrib.auth import get_user_model
 from django.db.models import *
 from django.db.models.fields import *
@@ -27,14 +29,14 @@ class Robot(Model):
     机器人
     """
     MODES = (
-        ("A", "企业微信"),
-        ("B", "钉钉"),
-        ("C", "其他类型"),
+        ("wechat", "企业微信"),
+        ("dingtalk", "钉钉"),
+        ("other", "其他类型"),
     )
     name = CharField(max_length=32, null=False, blank=False, unique=True, verbose_name="机器人名称")
     group = CharField(max_length=64, null=False, blank=False, verbose_name="群组名称")
     api = URLField(unique=True, null=False, blank=False, verbose_name="机器人链接地址")
-    mode = CharField(choices=MODES, max_length=1, null=False, blank=False, verbose_name="类型")
+    mode = CharField(choices=MODES, max_length=16, null=False, blank=False, verbose_name="类型")
     create = DateTimeField(auto_now_add=True, verbose_name="添加时间")
     update = DateTimeField(auto_now=True, verbose_name="上次修改")
     # 需要在admin_model中重写save方法来获取当前登录对象, 删除用户对象时置空
@@ -70,6 +72,44 @@ class Message(Model):
 
     def __str__(self):
         return self.task
+
+    def send(self):
+        """
+        消息推送给机器人平台
+        """
+        send_func = getattr(self, f"_send_to_{self.robot.mode}", None)
+        if callable(send_func):
+            return send_func()
+
+    def _send_to_wechat(self):
+        """
+        消息推送给微信平台
+        """
+        headers = {"Content-Type": "application/json"}
+        data = {
+            "msgtype": "markdown",
+            "markdown": {
+                "content": self.content,
+            }
+        }
+        try:
+            response = requests.post(self.robot.api, data=data, headers=headers)
+        except Exception as e:
+            return False, e
+        else:
+            return True, json.dumps(response.json())
+
+    def _send_to_dingtalk(self):
+        """
+        TODO: 消息推送给钉钉
+        """
+        return False, f"Not supported robot type [{self.robot.mode}]."
+
+    def _send_to_other(self):
+        """
+        TODO: 更多类型的机器人支持
+        """
+        return False, f"Not supported robot type [{self.robot.mode}]."
 
 
 class Keyword(Model):
@@ -171,7 +211,7 @@ class Search(Model):
 
 class Attendance(Model):
     """
-    排班表
+    排班表: 根据system表值班组id列表每几天创建
     """
     date = DateField(unique=True, null=False, blank=False, verbose_name="值班日期",
                      error_messages={'unique': '当天已存在值班人，请先移除或修改记录'})
@@ -214,7 +254,7 @@ class System(Model):
     系统配置: 在项目初始化的时候插入记录，平时仅允许修改，不允许增加或删除
     """
     key = CharField(max_length=32, null=False, blank=False, unique=True, verbose_name="键")
-    value = CharField(max_length=32, null=False, blank=False, verbose_name="值")
+    value = TextField(max_length=128, null=False, blank=False, verbose_name="值", help_text="最长128字符")
     create = DateTimeField(auto_now_add=True, verbose_name="添加时间")
     update = DateTimeField(auto_now=True, verbose_name="上次修改")
     # 需要在admin_model中重写save方法来获取当前登录对象, 删除用户对象时置空

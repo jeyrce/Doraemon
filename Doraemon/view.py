@@ -31,10 +31,12 @@ class IndexView(ListView):
 
     ordering = "date"
     template_name = "index.html"
-    queryset = Attendance.objects.filter(
-        date__gte=datetime.date.today(),
-        date__lte=datetime.date.today() + datetime.timedelta(days=get_from_db("SHOW_DUTY_DAYS", int, 7)),
-    )
+
+    def get_queryset(self):
+        return Attendance.objects.filter(
+            date__gte=datetime.date.today(),
+            date__lte=datetime.date.today() + datetime.timedelta(days=get_from_db('SHOW_DUTY_DAYS', int, 7)),
+        )
 
 
 class GoToView(View):
@@ -91,7 +93,6 @@ async def alive_view(request):
     """
     返回系统正常的结果
     """
-    import asyncio
     import time
     time.sleep(12)
     return JsonResponse({"code": 0, "data": request.CLIENT, "message": "OK"})
