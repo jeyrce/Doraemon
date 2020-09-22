@@ -30,8 +30,12 @@ def notice_on_time(*args):
     message = Message.objects.filter(task=code).first()
     if message:
         duty = Attendance.objects.filter(date=datetime.date.today()).first()
+        duty_list = Attendance.objects.filter(
+            date__gte=duty.date,
+            date__lt=duty.date + datetime.timedelta(days=get_from_db("SHOW_DUTY_DAYS", int, 7))
+        ).order_by("date")
         if message.is_active:
-            _, msg = message.send(duty)
+            _, msg = message.send(duty, duty_list)
             logger.info(f"[{title}push message over: {msg}")
 
 

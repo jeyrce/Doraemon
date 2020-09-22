@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+{% for duty in duty_list %}
+{{ duty.date }} - {{ duty.first_name }}{{ duty.last_name }} - {{ duty.weekday }}
+{% endfor %}
+
+
+</body>
+</html>

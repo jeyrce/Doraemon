@@ -74,23 +74,29 @@ class Message(Model):
     def __str__(self):
         return self.task
 
-    def send(self, duty):
+    def send(self, duty, duty_list):
         """
         消息推送给机器人平台
         """
         send_func = getattr(self, f"_send_to_{self.robot.mode}", None)
         if callable(send_func):
-            return send_func(duty)
+            return send_func(duty, duty_list)
 
-    def _send_to_wechat(self, duty):
+    def _send_to_wechat(self, duty, duty_list):
         """
         消息推送给微信平台
         """
         headers = {"Content-Type": "application/json"}
         data = {
-            "msgtype": "markdown",
-            "markdown": {
-                "content": Template(self.content).render(Context({"duty", duty})),
+            "msgtype": "text",
+            "text": {
+                "mentioned_list": ["@all", ],
+                "content": Template(self.content).render(
+                    Context({
+                        "duty": duty,   # 今日值班
+                        "duty_list": duty_list, # 最近七天的值班
+                    })
+                ),
             }
         }
         try:
@@ -100,13 +106,13 @@ class Message(Model):
         else:
             return True, json.dumps(response.json())
 
-    def _send_to_dingtalk(self, duty):
+    def _send_to_dingtalk(self, duty, duty_list):
         """
         TODO: 消息推送给钉钉
         """
         return False, f"Not supported robot type [{self.robot.mode}]."
 
-    def _send_to_other(self, duty):
+    def _send_to_other(self, duty, duty_list):
         """
         TODO: 更多类型的机器人支持
         """

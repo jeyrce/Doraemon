@@ -167,6 +167,7 @@ TASKS = (
     ('GROUP_MORNING', "早九点值班提醒"),
     ('GROUP_NIGHT', "晚六点值班提醒"),
     ('PROBLEM_MORNING', "早九点接待提醒"),
+    ('PROBLEM_NOON', "中午14点接待提醒"),
     ('PROBLEM_NIGHT', "晚六点接待提醒"),
 )
 
