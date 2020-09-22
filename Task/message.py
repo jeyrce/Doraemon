@@ -28,8 +28,11 @@ def notice_on_time(*args):
     code, title = args
     logger.info(f"[{title}]start push message...")
     message = Message.objects.filter(task=code).first()
-    _, msg = message.send()
-    logger.info(f"[{title}push message over: {msg}")
+    if message:
+        duty = Attendance.objects.filter(date=datetime.date.today()).first()
+        if message.is_active:
+            _, msg = message.send(duty)
+            logger.info(f"[{title}push message over: {msg}")
 
 
 @app.task

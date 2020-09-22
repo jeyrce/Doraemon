@@ -14,6 +14,7 @@ import requests
 from django.contrib.auth import get_user_model
 from django.db.models import *
 from django.db.models.fields import *
+from django.template import Template, Context
 
 from Doraemon.settings import GOTO_URL, TASKS
 
@@ -73,15 +74,15 @@ class Message(Model):
     def __str__(self):
         return self.task
 
-    def send(self):
+    def send(self, duty):
         """
         消息推送给机器人平台
         """
         send_func = getattr(self, f"_send_to_{self.robot.mode}", None)
         if callable(send_func):
-            return send_func()
+            return send_func(duty)
 
-    def _send_to_wechat(self):
+    def _send_to_wechat(self, duty):
         """
         消息推送给微信平台
         """
@@ -89,7 +90,7 @@ class Message(Model):
         data = {
             "msgtype": "markdown",
             "markdown": {
-                "content": self.content,
+                "content": Template(self.content).render(Context({"duty", duty})),
             }
         }
         try:
@@ -99,13 +100,13 @@ class Message(Model):
         else:
             return True, json.dumps(response.json())
 
-    def _send_to_dingtalk(self):
+    def _send_to_dingtalk(self, duty):
         """
         TODO: 消息推送给钉钉
         """
         return False, f"Not supported robot type [{self.robot.mode}]."
 
-    def _send_to_other(self):
+    def _send_to_other(self, duty):
         """
         TODO: 更多类型的机器人支持
         """
