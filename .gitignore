@@ -8,6 +8,7 @@ __pycache__/
 
 # IDE
 .idea/
+STATIC/
 
 
 # tmp files
