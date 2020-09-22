@@ -29,7 +29,7 @@ def yesterday_count(*args):
     pass
 
 
-@app.task(name="mail.send_one")
+@app.task
 def send_one(subject, message, recipient_list, html=None):
     """
     发送一条消息: 自动添加主题前缀和签名
@@ -43,7 +43,7 @@ def send_one(subject, message, recipient_list, html=None):
     )
 
 
-@app.task(name="mail.send_many_text")
+@app.task
 def send_many_text(data_tuple):
     """
     一次性发送多条消息: 自动添加前缀和主题签名
@@ -58,7 +58,7 @@ def send_many_text(data_tuple):
     send_mass_mail(data_tuple)
 
 
-@app.task(name="mail.send_password_reset_link")
+@app.task
 def send_password_rest_link(
         subject_template_name,
         email_template_name,

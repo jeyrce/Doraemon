@@ -14,7 +14,10 @@ app = celery.Celery("Doraemon")
 
 app.config_from_object("Task.settings")
 
-app.autodiscover_tasks([
-    "Task.mail",
-    "Task.message",
-])
+# fixme: 此处自动发现无法加载message中的任务，暂未找到原因
+# fixme: 因此在settings中进行导入
+# app.autodiscover_tasks([
+#     "Task.mail",
+#     "Task.message",
+#     "Task.demo",
+# ])

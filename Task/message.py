@@ -13,14 +13,14 @@ import logging
 from django.contrib.auth import get_user_model
 
 from Task import app
-from Doraemon.model import *
+from Doraemon.model import Message, Attendance
 from utils import get_from_db, get_next_username
 
 UserProfile = get_user_model()
 logger = logging.getLogger(__name__)
 
 
-@app.task("message.notice_on_time")
+@app.task
 def notice_on_time(*args):
     """
     从消息表筛选出结果进行推送到机器人
@@ -32,7 +32,7 @@ def notice_on_time(*args):
     logger.info(f"[{title}push message over: {msg}")
 
 
-@app.task("message.update_attendance")
+@app.task
 def update_attendance(*args):
     """
     每天检查排班表，如果数量不足7天, 则创建接下来一天的排班记录

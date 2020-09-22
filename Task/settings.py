@@ -28,9 +28,11 @@ CELERYD_HIJACK_ROOT_LOGGER = True
 CELERY_TIMEZONE = 'Asia/Shanghai'
 
 # 注册Celery任务, 或者使用celery.autodiscover_tasks也可
-# CELERY_IMPORTS = (
-#     "tasks.mail",
-# )
+CELERY_IMPORTS = (
+    "Task.mail",
+    "Task.message",
+    "Task.demo",
+)
 
 # 序列化方法
 CELERY_TASK_SERIALIZER = "pickle"
