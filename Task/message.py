@@ -29,7 +29,8 @@ def notice_on_time(*args):
     logger.info(f"[{title}]start push message...")
     message = Message.objects.filter(task=code).first()
     if message and message.is_active:
-        _, msg = message.send(get_default_duty_and_list())
+        duty, list_ = get_default_duty_and_list()
+        _, msg = message.send(duty, list_)
         logger.info(f"[{title}push message over: {msg}")
 
 
@@ -71,5 +72,6 @@ def alive_send(*args):
     logger.info(f"Start push alive message...")
     message = Message.objects.filter(task=code).first()
     if message and message.is_active:
-        _, result = message.send(get_default_duty_and_list())
+        duty, list_ = get_default_duty_and_list()
+        _, result = message.send(duty, list_)
         logger.info(f"Push alive status over: {result}")
