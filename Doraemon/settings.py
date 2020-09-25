@@ -187,15 +187,15 @@ KEYS = [
 
 # ----------本站系统所用email配置----------
 EMAIL_SUBJECT_PREFIX = "[Doraemon]"
-SERVER_EMAIL = 'support@lujianxin.com'
+SERVER_EMAIL = 'ido@xoo.site'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.exmail.qq.com'
 EMAIL_PORT = 465
 EMAIL_USE_LOCALTIME = False
 
 # Optional SMTP authentication information for EMAIL_HOST.
-EMAIL_HOST_USER = 'support@lujianxin.com'
-EMAIL_HOST_PASSWORD = 'lujianxin.com'
+EMAIL_HOST_USER = 'ido@xoo.site'
+EMAIL_HOST_PASSWORD = 'xoo.site'
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_SSL_CERTFILE = None
