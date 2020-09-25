@@ -201,6 +201,7 @@ EMAIL_USE_SSL = True
 EMAIL_SSL_CERTFILE = None
 EMAIL_SSL_KEYFILE = None
 EMAIL_TIMEOUT = None
+DEFAULT_FROM_EMAIL = "ido@xoo.site"
 
 CACHES = {
     # 默认使用的库，session，csrf等存储
