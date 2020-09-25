@@ -255,6 +255,11 @@ class Attendance(Model):
 
     weekday.short_description = "工作日"
 
+    def worker_name(self):
+        return f"{self.worker.last_name}{self.worker.first_name}"
+
+    worker_name.short_description = "姓名"
+
 
 class System(Model):
     """

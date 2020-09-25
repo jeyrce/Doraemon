@@ -18,6 +18,14 @@ admin.site.site_title = '系统管理'
 Account = get_user_model()
 
 
+def full_name(self):
+    return f"{self.last_name}{self.first_name}"
+
+
+Account.full_name = full_name
+Account.full_name.short_description = "姓名"
+
+
 class CommonAdmin(admin.ModelAdmin):
     """
     公共的设置
@@ -80,7 +88,7 @@ class ByUserMixin(object):
 
 
 class UserAdmin(CommonAdmin):
-    list_display = ("username", "email", "is_staff", "is_active", "is_superuser")
+    list_display = ("username", "full_name", "email", "is_staff", "is_active", "is_superuser")
     list_display_links = ()
     list_filter = ("is_superuser", "is_staff", "is_active")
     list_editable = ("is_superuser", "is_staff", "is_active")
@@ -176,14 +184,14 @@ class SearchAdmin(ClickAdmin):
 
 
 class AttendanceAdmin(ByUserMixin, CommonAdmin):
-    list_display = ("date", "weekday", "worker", "is_active", "active")
+    list_display = ("date", "weekday", "worker_name", "is_active", "active")
     list_display_links = ()
     list_filter = ()
     list_editable = ()
     search_fields = ("date",)
     inlines = []
     ordering = ('-date',)
-    readonly_fields = ('token', 'create', "weekday", "by", "active", "ip", "device", "is_active")
+    readonly_fields = ('token', 'create', "weekday", "by", "active", "ip", "device", "is_active",)
     fieldsets = (
         ("值班信息", {"fields": ("date", "weekday", "worker", 'token',)}),
         ("签到信息", {"fields": ("is_active", "active", "ip", "device",)}),
