@@ -20,6 +20,7 @@ from utils import get_from_db
 
 __all__ = [
     "IndexView", "GoToView", "SearchView", "SignView", "PasswordResetView", "AsyncMailPasswordResetView", "alive_view",
+    "LoginWhenPasswordRested",
 ]
 
 
@@ -96,3 +97,11 @@ async def alive_view(request):
     import time
     time.sleep(12)
     return JsonResponse({"code": 0, "data": request.CLIENT, "message": "OK"})
+
+
+class LoginWhenPasswordRested(RedirectView):
+    """
+    密码通过邮件重置后的连接地址
+    """
+    pattern_name = True
+    url = "/admin/login/?next=/admin/"

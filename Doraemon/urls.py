@@ -37,6 +37,7 @@ urlpatterns.extend([
     path('auth/password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('auth/reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('auth/reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('accounts/login/', LoginWhenPasswordRested.as_view(), name='password_reset_login'),
 ])
 
 if DEBUG:
