@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 
 import pymysql
+
 pymysql.version_info = (1, 4, 13, "final", 0)
 pymysql.install_as_MySQLdb()
 
@@ -169,6 +170,7 @@ TASKS = (
     ('PROBLEM_MORNING', "早九点接待提醒"),
     ('PROBLEM_NOON', "中午14点接待提醒"),
     ('PROBLEM_NIGHT', "晚六点接待提醒"),
+    ("HOUR_MONITOR", "每小时存活提醒"),
 )
 
 # 初始化系统配置

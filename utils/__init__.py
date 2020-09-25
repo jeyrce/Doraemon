@@ -7,9 +7,10 @@ __author__  = JeeysheLu [Jeeyshe@gmail.com] [https://www.lujianxin.com/] [2020/9
     
 This software is licensed to you under the MIT License. Looking forward to making it better.
 """
+import datetime
 import logging
 
-from Doraemon.model import System
+from Doraemon.model import System, Attendance
 
 logger = logging.getLogger(__name__)
 
@@ -47,3 +48,15 @@ def get_next_username(username: str):
         return duty_loop[next_index]
     logger.error(f"username: {username} not in duty_loop: {duty_loop}")
     return None
+
+
+def get_default_duty_and_list():
+    """
+    获取今日值班， 以及未来一周值班表
+    """
+    duty = Attendance.objects.filter(date=datetime.date.today()).first()
+    duty_list = Attendance.objects.filter(
+        date__gte=duty.date,
+        date__lt=duty.date + datetime.timedelta(days=get_from_db("SHOW_DUTY_DAYS", int, 7))
+    ).order_by("date")
+    return duty, duty_list

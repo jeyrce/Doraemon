@@ -61,6 +61,12 @@ CELERY_DEFAULT_ROUTING_KEY = 'default'
 
 # 定时任务配置如下
 CELERYBEAT_SCHEDULE = {
+    # 定时query任务保持mysql连接
+    TASKS[5][1]: {
+        "task": "Task.message.alive_send",
+        "schedule": datetime.timedelta(hours=1),
+        "args": TASKS[5],
+    },
     # 值班群定时提醒任务
     TASKS[0][1]: {
         'task': 'Task.message.notice_on_time',

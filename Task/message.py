@@ -14,7 +14,7 @@ from django.contrib.auth import get_user_model
 
 from Task import app
 from Doraemon.model import Message, Attendance
-from utils import get_from_db, get_next_username
+from utils import get_from_db, get_next_username, get_default_duty_and_list
 
 UserProfile = get_user_model()
 logger = logging.getLogger(__name__)
@@ -28,15 +28,9 @@ def notice_on_time(*args):
     code, title = args
     logger.info(f"[{title}]start push message...")
     message = Message.objects.filter(task=code).first()
-    if message:
-        duty = Attendance.objects.filter(date=datetime.date.today()).first()
-        duty_list = Attendance.objects.filter(
-            date__gte=duty.date,
-            date__lt=duty.date + datetime.timedelta(days=get_from_db("SHOW_DUTY_DAYS", int, 7))
-        ).order_by("date")
-        if message.is_active:
-            _, msg = message.send(duty, duty_list)
-            logger.info(f"[{title}push message over: {msg}")
+    if message and message.is_active:
+        _, msg = message.send(get_default_duty_and_list())
+        logger.info(f"[{title}push message over: {msg}")
 
 
 @app.task
@@ -65,3 +59,17 @@ def update_attendance(*args):
             return
         logger.error("got next_username failed...")
     logger.info("attendance's update not needed...")
+
+
+@app.task
+def alive_send(*args):
+    """
+    - 每小时提醒任务存活
+    - 每小时执行一次MySQL查询，让连接保持状态
+    """
+    code, title = args
+    logger.info(f"Start push alive message...")
+    message = Message.objects.filter(task=code).first()
+    if message and message.is_active:
+        _, result = message.send(get_default_duty_and_list())
+        logger.info(f"Push alive status over: {result}")
