@@ -10,6 +10,8 @@ This software is licensed to you under the MIT License. Looking forward to makin
 import datetime
 import logging
 
+from django.db import close_old_connections
+
 from Doraemon.model import System, Attendance
 
 logger = logging.getLogger(__name__)
@@ -60,3 +62,19 @@ def get_default_duty_and_list():
         date__lt=duty.date + datetime.timedelta(days=get_from_db("SHOW_DUTY_DAYS", int, 7))
     ).order_by("date")
     return duty, duty_list
+
+
+def db_flush(query_func):
+    """
+    使用查询之前先关闭掉失效连接，避免出现以下问题
+    1. OperationalError: (2006, 'MySQL server has gone away')
+    1. OperationalError: (2013, 'Lost connection to MySQL server during query')
+    """
+    # something to do before query
+    close_old_connections()
+
+    def _wrapper(*args, **kwargs):
+        return query_func(*args, **kwargs)
+
+    # something to do after query
+    return _wrapper

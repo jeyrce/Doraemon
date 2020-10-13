@@ -15,12 +15,14 @@ from django.core.mail import EmailMultiAlternatives
 
 from Task import app
 from Doraemon.settings import EMAIL_SUBJECT_PREFIX, SERVER_EMAIL
+from utils import db_flush
 
 logger = logging.getLogger(__name__)
 
 add_prefix = lambda txt: '{}{}'.format(EMAIL_SUBJECT_PREFIX, txt) if not txt.startswith(EMAIL_SUBJECT_PREFIX) else txt
 
 
+@db_flush
 @app.task
 def yesterday_count(*args):
     """
@@ -29,6 +31,7 @@ def yesterday_count(*args):
     pass
 
 
+@db_flush
 @app.task
 def send_one(subject, message, recipient_list, html=None):
     """
@@ -43,6 +46,7 @@ def send_one(subject, message, recipient_list, html=None):
     )
 
 
+@db_flush
 @app.task
 def send_many_text(data_tuple):
     """
@@ -58,6 +62,7 @@ def send_many_text(data_tuple):
     send_mass_mail(data_tuple)
 
 
+@db_flush
 @app.task
 def send_password_rest_link(
         subject_template_name,

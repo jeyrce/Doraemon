@@ -14,12 +14,13 @@ from django.contrib.auth import get_user_model
 
 from Task import app
 from Doraemon.model import Message, Attendance
-from utils import get_from_db, get_next_username, get_default_duty_and_list
+from utils import get_from_db, get_next_username, get_default_duty_and_list, db_flush
 
 UserProfile = get_user_model()
 logger = logging.getLogger(__name__)
 
 
+@db_flush
 @app.task
 def notice_on_time(*args):
     """
@@ -34,6 +35,7 @@ def notice_on_time(*args):
         logger.info(f"[{title}push message over: {msg}")
 
 
+@db_flush
 @app.task
 def update_attendance(*args):
     """
@@ -62,6 +64,7 @@ def update_attendance(*args):
     logger.info("attendance's update not needed...")
 
 
+@db_flush
 @app.task
 def alive_send(*args):
     """
