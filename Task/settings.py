@@ -111,4 +111,22 @@ CELERYBEAT_SCHEDULE = {
         "schedule": crontab(hour="09", minute="00"),
         "args": TASKS[6],
     },
+    # 管理节点巡检提醒
+    TASKS[7][1]: {
+        "task": "Task.message.notice_on_time",
+        "schedule": crontab(day_of_week="friday", hour="14", minute="50"),
+        "args": TASKS[7],
+    },
+    # 镜像仓库运维提醒
+    TASKS[8][1]: {
+        "task": "Task.message.notice_on_time",
+        "schedule": crontab(day_of_week="friday", hour="17", minute="00"),
+        "args": TASKS[8],
+    },
+    # 小团队技术分享提醒
+    TASKS[9][1]: {
+        "task": "Task.message.notice_on_time",
+        "schedule": crontab(day_of_week="thursday", hour="09", minute="30"),
+        "args": TASKS[9],
+    },
 }

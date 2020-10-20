@@ -173,6 +173,9 @@ TASKS = (
     ('PROBLEM_NIGHT', "晚六点接待提醒"),
     ("HOUR_MONITOR", "每小时存活提醒"),
     ("MORNING_TB", "早九点更新TB提醒"),
+    ("FRIDAY_CHECK", "每周五巡检提醒"),
+    ("HARBOR_OPS", "周末镜像仓库运维提醒"),
+    ("SHARE_GROUP", "团队技术分享提醒"),
 )
 
 # 初始化系统配置
