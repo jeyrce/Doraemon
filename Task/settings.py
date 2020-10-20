@@ -129,4 +129,10 @@ CELERYBEAT_SCHEDULE = {
         "schedule": crontab(day_of_week="thursday", hour="09", minute="30"),
         "args": TASKS[9],
     },
+    # 研发群代码合并提醒
+    TASKS[10][1]: {
+        "task": "Task.message.notice_on_time",
+        "schedule": crontab(hour="21", minute="00"),
+        "args": TASKS[10],
+    },
 }

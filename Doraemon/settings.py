@@ -176,6 +176,7 @@ TASKS = (
     ("FRIDAY_CHECK", "每周五巡检提醒"),
     ("HARBOR_OPS", "周末镜像仓库运维提醒"),
     ("SHARE_GROUP", "团队技术分享提醒"),
+    ("DAILY_COMMIT", "每日代码合并提醒"),
 )
 
 # 初始化系统配置
