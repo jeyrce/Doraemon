@@ -105,4 +105,10 @@ CELERYBEAT_SCHEDULE = {
         "schedule": crontab(hour="03", minute="00"),
         "args": (),
     },
+    # 研发群每日提醒
+    TASKS[6][1]: {
+        "task": "Task.message.notice_on_time",
+        "schedule": crontab(hour="09", minute="00"),
+        "args": TASKS[6],
+    },
 }

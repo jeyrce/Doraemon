@@ -51,7 +51,7 @@ def update_attendance(*args):
         if next_username:
             next = {
                 "date": last.date + datetime.timedelta(days=1),
-                "worker": UserProfile.objects.filter(username=next_username),
+                "worker": UserProfile.objects.filter(username=next_username).first(),
             }
             try:
                 Attendance.objects.create(**next)
