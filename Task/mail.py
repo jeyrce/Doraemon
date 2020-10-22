@@ -62,8 +62,8 @@ def send_many_text(data_tuple):
     send_mass_mail(data_tuple)
 
 
-@db_flush
 @app.task()
+@db_flush
 def send_password_rest_link(
         subject_template_name,
         email_template_name,
