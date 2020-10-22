@@ -46,8 +46,8 @@ def send_one(subject, message, recipient_list, html=None):
     )
 
 
-@db_flush
 @app.task()
+@db_flush
 def send_many_text(data_tuple):
     """
     一次性发送多条消息: 自动添加前缀和主题签名
