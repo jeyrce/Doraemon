@@ -23,7 +23,7 @@ add_prefix = lambda txt: '{}{}'.format(EMAIL_SUBJECT_PREFIX, txt) if not txt.sta
 
 
 @db_flush
-@app.task
+@app.task()
 def yesterday_count(*args):
     """
     TODO: 汇总上一天搜索和点击记录邮件推送给项目经理
@@ -32,7 +32,7 @@ def yesterday_count(*args):
 
 
 @db_flush
-@app.task
+@app.task()
 def send_one(subject, message, recipient_list, html=None):
     """
     发送一条消息: 自动添加主题前缀和签名
@@ -47,7 +47,7 @@ def send_one(subject, message, recipient_list, html=None):
 
 
 @db_flush
-@app.task
+@app.task()
 def send_many_text(data_tuple):
     """
     一次性发送多条消息: 自动添加前缀和主题签名
@@ -63,7 +63,7 @@ def send_many_text(data_tuple):
 
 
 @db_flush
-@app.task
+@app.task()
 def send_password_rest_link(
         subject_template_name,
         email_template_name,
