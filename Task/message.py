@@ -47,7 +47,7 @@ def update_attendance(*args):
     attendances = Attendance.objects.filter(date__gte=today).order_by("date")
     last = attendances.last()
     if attendances.count() < get_from_db("SHOW_DUTY_DAYS", int, 7):
-        next_username = get_next_username(last.username)
+        next_username = get_next_username(last.worker.username)
         if next_username:
             next = {
                 "date": last.date + datetime.timedelta(days=1),

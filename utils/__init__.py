@@ -38,7 +38,7 @@ def get_next_username(username: str):
     """
     获取下一个值班人员用户名
     """
-    duty_loop = (get_from_db("DUTY_LOOP", list, []))
+    duty_loop = get_from_db("DUTY_LOOP", eval, [])
     loop_length = len(duty_loop)
     if loop_length == 0:
         logger.error(f"got an unexpected duty_loop: {duty_loop}")
