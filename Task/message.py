@@ -39,6 +39,7 @@ def notice_on_time(*args):
                 logger.info(f"[{title}push message over: {msg}")
                 break
             time.sleep(3)
+            logger.info(f"Retry push {i + 1} times.")
 
 
 @db_flush

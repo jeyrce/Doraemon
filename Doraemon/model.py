@@ -100,7 +100,7 @@ class Message(Model):
             }
         }
         try:
-            response = requests.post(self.robot.api, json=data, headers=headers)
+            response = requests.post(self.robot.api, json=data, headers=headers, timeout=20)
             result = response.json()
         except Exception as e:
             return False, e
