@@ -136,3 +136,6 @@ CELERYBEAT_SCHEDULE = {
         "args": TASKS[10],
     },
 }
+
+# 消息发送重试次数
+MESSAGE_RETRY = 3

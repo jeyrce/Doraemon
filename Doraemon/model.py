@@ -93,18 +93,21 @@ class Message(Model):
                 "mentioned_list": ["@all", ],
                 "content": Template(self.content).render(
                     Context({
-                        "duty": duty,   # 今日值班
-                        "duty_list": duty_list, # 最近七天的值班
+                        "duty": duty,  # 今日值班
+                        "duty_list": duty_list,  # 最近七天的值班
                     })
                 ),
             }
         }
         try:
             response = requests.post(self.robot.api, json=data, headers=headers)
+            result = response.json()
         except Exception as e:
             return False, e
         else:
-            return True, json.dumps(response.json())
+            if result.get("errcode", 1) == 0:
+                return True, json.dumps(result)
+            return False, json.dumps(result)
 
     def _send_to_dingtalk(self, duty, duty_list):
         """

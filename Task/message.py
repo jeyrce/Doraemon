@@ -7,12 +7,14 @@ __author__  = JeeysheLu [Jeeyshe@gmail.com] [https://www.lujianxin.com/] [2020/9
     
 This software is licensed to you under the MIT License. Looking forward to making it better.
 """
+import time
 import datetime
 import logging
 
 from django.contrib.auth import get_user_model
 
 from Task import app
+from Task.settings import MESSAGE_RETRY
 from Doraemon.model import Message, Attendance
 from utils import get_from_db, get_next_username, get_default_duty_and_list, db_flush
 
@@ -31,8 +33,12 @@ def notice_on_time(*args):
     message = Message.objects.filter(task=code).first()
     if message and message.is_active:
         duty, list_ = get_default_duty_and_list()
-        _, msg = message.send(duty, list_)
-        logger.info(f"[{title}push message over: {msg}")
+        for i in range(MESSAGE_RETRY):
+            ok, msg = message.send(duty, list_)
+            if ok:
+                logger.info(f"[{title}push message over: {msg}")
+                break
+            time.sleep(3)
 
 
 @db_flush
@@ -52,6 +58,7 @@ def update_attendance(*args):
             next = {
                 "date": last.date + datetime.timedelta(days=1),
                 "worker": UserProfile.objects.filter(username=next_username).first(),
+                "by_id": 1,  # 默认为超管
             }
             try:
                 Attendance.objects.create(**next)
