@@ -33,10 +33,11 @@ def notice_on_time(*args):
     message = Message.objects.filter(task=code).first()
     if message and message.is_active:
         duty, list_ = get_default_duty_and_list()
+        logger.info(f"Get default duty: {list_}")
         for i in range(MESSAGE_RETRY):
             ok, msg = message.send(duty, list_)
             if ok:
-                logger.info(f"[{title}push message over: {msg}")
+                logger.info(f"[{title}]push message over: {msg}")
                 break
             time.sleep(3)
             logger.info(f"Retry push {i + 1} times.")

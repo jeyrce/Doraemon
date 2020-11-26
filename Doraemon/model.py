@@ -7,8 +7,10 @@ __author__  = JeeysheLu [Jeeyshe@gmail.com] [https://www.lujianxin.com/] [2020/9
 
 This software is licensed to you under the MIT License. Looking forward to making it better.
 """
+import time
 import uuid
 import json
+import random
 
 import requests
 from django.contrib.auth import get_user_model
@@ -78,7 +80,8 @@ class Message(Model):
         """
         消息推送给机器人平台
         """
-        send_func = getattr(self, f"_send_to_{self.robot.mode}", None)
+        time.sleep(random.random() * 10)  # 随机 0-10s分布，避免同一时刻大量推送
+        send_func = getattr(self, f"_send_to_{self.robot.mode}", "xxx")
         if callable(send_func):
             return send_func(duty, duty_list)
 
